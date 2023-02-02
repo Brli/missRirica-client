@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     branches:
-    - "github-action"
+    - "main"
 
 jobs:
 # 1. build misskey.js, which is required by missRirica
