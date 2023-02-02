@@ -22,8 +22,8 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
 import calcAge from 's-age';
-import * as Acct from 'misskey-js/built/acct';
-import * as misskey from 'misskey-js';
+import * as Acct from 'yamisskey-js/built/acct';
+import * as misskey from 'yamisskey-js';
 import { getScrollPosition } from '@/scripts/scroll';
 import number from '@/filters/number';
 import { userPage, acct as getAcct } from '@/filters/user';

@@ -37,6 +37,18 @@
 							i18n.ts.login
 						}}
 					</MkButton>
+
+					<MkSelect v-model="lang">
+						<template #label>{{ i18n.ts.uiLanguage }}</template>
+						<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
+						<template #caption>
+							<I18n :src="i18n.ts.i18nInfo" tag="span">
+								<template #link>
+									<MkLink url="https://crowdin.com/project/misskey">Crowdin</MkLink>
+								</template>
+							</I18n>
+						</template>
+					</MkSelect>
 				</div>
 			</div>
 		</div>
@@ -47,8 +59,18 @@
 <script lang="ts" setup>
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkSelect from "@/components/MkSelect.vue"
+import MkLink from "@/components/MkLink.vue"
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { ref, watch } from "vue";
+import { miLocalStorage } from "@/local-storage";
+import { langs as _langs } from '@/config';
+import { unisonReload } from "@/scripts/unison-reload";
+
+const langs = ref(_langs)
+const lang = ref(miLocalStorage.getItem('lang'));
+
 
 let meta = $ref();
 let stats = $ref();
@@ -84,6 +106,27 @@ function showMenu(ev) {
 			window.open('https://misskey-hub.net/help.md', '_blank');
 		},
 	}], ev.currentTarget ?? ev.target);
+}
+
+watch(lang, () => {
+  miLocalStorage.setItem('lang', lang.value as string);
+  miLocalStorage.removeItem('locale');
+});
+
+watch([
+  lang,
+], async () => {
+  await reloadAsk();
+});
+
+async function reloadAsk() {
+  const { canceled } = await os.confirm({
+    type: 'info',
+    text: i18n.ts.reloadToApplySetting,
+  });
+  if (canceled) return;
+
+  unisonReload();
 }
 </script>
 
